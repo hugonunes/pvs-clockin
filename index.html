@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Picar Ponto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        button { background: #0078d4; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Registo de Ponto</h2>
+    <input type="text" id="nome" placeholder="Teu Nome" required><br><br>
+    <button onclick="picarPonto('Entrada')">Entrada 🟢</button>
+    <button onclick="picarPonto('Saida')" style="background:#d83b01;">Saída 🔴</button>
+    <p id="status"></p>
+</div>
+
+<script>
+async function picarPonto(tipo) {
+    const nome = document.getElementById('nome').value;
+    if(!nome) return alert('Insere o teu nome!');
+    
+    document.getElementById('status').innerText = "A registar...";
+    
+    // Se usares o Power Automate, colocas o URL dele aqui. 
+    // Se usares Cloudflare Workers, colocas o URL da Worker.
+    const URL_API = "O_TEU_URL_AQUI"; 
+
+    const dados = {
+        Nome: nome,
+        Data: new Date().toLocaleDateString('pt-PT'),
+        Hora: new Date().toLocaleTimeString('pt-PT'),
+        Tipo: tipo
+    };
+
+    try {
+        const response = await fetch(URL_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
+        if(response.ok) document.getElementById('status').innerText = "Sucesso!";
+        else document.getElementById('status').innerText = "Erro ao registar.";
+    } catch (err) {
+        document.getElementById('status').innerText = "Erro de rede.";
+    }
+}
+</script>
+</body>
+</html>
